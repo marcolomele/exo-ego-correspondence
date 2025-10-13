@@ -79,3 +79,4 @@ Metrics:
 Benchmarks:
 * baseline approach found on database
 * ObjectRelator: https://yuqianfu.com/ObjectRelator/
+* O-Ma-Ma: https://doi.org/10.48550/arXiv.2506.06026
