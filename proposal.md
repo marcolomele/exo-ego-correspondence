@@ -14,7 +14,7 @@ Egocentric view data (Ego) is video taken from the point of view (POV) of humans
 
 However, ego is constrained to where our bodies can physically take us and focuses on a narrow portion of the available environment canvas. This means that global information about the environment and elements/events in it is missed. 
 
-Exocentric view (exo) is vide taked from any other POV than the human's, typically cameras on walls, stands, or drones. It offers a global view of the environment where the action is talking place, from multiple angles, thus covering multiple portions at the same time. 
+Exocentric view (exo) is vide taked from any other POV than the human's, typically cameras on walls, stands, or drones. It offers a global view of the environment where the action is taking place, from multiple angles, thus covering multiple portions at the same time. 
 
 However exo lacks detail and dexterity of the action that human is focused on. 
 
@@ -39,7 +39,18 @@ The authors of the database propose several pre-defined tasks. We focus on the �
 * Exo video (fixed or handheld third-person cameras)
 * Per-frame masks marking the same object in both views
 * Visibility flags (tells us if the object is occluded in ego / visible in exo)
-* Camera calibration JSONs (intrinsics + extrinsics) – for analysis if ML model is able to learn Geometric mapping without coordinate inputs. 
+* Camera calibration JSONs (trajectory and eye-gase) – optional extension: analysis if ML model is able to learn Geometric mapping without coordinate inputs.
 
-## Proposed Solution (High-Level Overview): Provide a overview of your proposed approach or solution. Focus on the key idea and overall strategy rather than implementation details.
-## Performance Evaluation Approach: Explain how you plan to assess your solution’s effectiveness. Specify the metrics, benchmarks, or evaluation criteria you intend to use and why they are appropriate for your problem.
+More information on the correspondence task: https://docs.ego-exo4d-data.org/benchmarks/relations/correspondence/.
+
+## Proposed Solution
+### 
+
+### Plan
+* Data exploration – subset selection (topic, modality, availability of metadata of interest, size).
+* Data processing – extraction, loading, processing.
+* Background research – baseline + materials linked to competition
+* Modelling – 
+
+## Performance Evaluation Approach
+Explain how you plan to assess your solution’s effectiveness. Specify the metrics, benchmarks, or evaluation criteria you intend to use and why they are appropriate for your problem.
