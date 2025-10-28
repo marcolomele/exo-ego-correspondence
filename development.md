@@ -1,4 +1,10 @@
 # Stages
+## -0.5 Exploration – 48 hours
+Of data: which subset to choose, what is downloaded. 
+Of benchmark models: which models to assign.  
+
+Once we all have access to data, stage 0 starts. 
+
 ## 0. Data – 1 week
 Goals: 
 * select subset of data
@@ -6,11 +12,16 @@ Goals:
 * processing pipeline
 * loading pipeline
 
-Subset: TBD. 
+Subset: TBD.
 
     Derirable properties: big enough for training, small enough to download locally, must contain obstructions in EGO POV. 
 
 Access solution: either download locally or store online.
+
+Challenge: extract frames with object.
+Solution: Use narrations to find relevant frames with objects of interest.
+
+Use version 2.0 of dataset. 
 
 ## 1. Basic correspodance – 1 week
 Goal: Implement existing models on basic correspondence task.
@@ -24,9 +35,11 @@ Goal: Adapt approach to work with partial or full occlusion to achieve "Seeing t
 
 Potential solutions:
 * inject occlusions in training by generating random occlusions of objects and other image albumentations.
-* modify models to create richer representations across exo and ego views. 
+
+    Note: use same frames from stage 1 so we can compare changes. 
 
 Other solutions:
+* modify models to create richer representations across exo and ego views. 
 * model objects in parts so you can detect them even when they are partially occluded
 * recover features in occluded regions by generative models
 * occlusion aware attention on detection heads
