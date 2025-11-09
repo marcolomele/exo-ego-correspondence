@@ -19,6 +19,7 @@ from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime, timedelta
 import cv2
 from decord import VideoReader, cpu
+from lzstring import LZString
 
 
 def format_duration(seconds: float) -> str:
@@ -34,6 +35,48 @@ def format_duration(seconds: float) -> str:
         return f"{minutes}m {seconds}s"
     else:
         return f"{seconds}s"
+
+
+def decode_mask(width: int, height: int, encoded_mask: str):
+    """Decode LZString compressed mask to COCO RLE format."""
+    try:
+        decomp_string = LZString.decompressFromEncodedURIComponent(encoded_mask)
+    except:
+        return None
+    
+    decomp_encoded = decomp_string.encode()
+    rle_obj = {
+        "size": [height, width],
+        "counts": decomp_encoded,
+    }
+    rle_obj['counts'] = rle_obj['counts'].decode('ascii')
+    return rle_obj
+
+
+def process_masks(object_masks: Dict[str, Any]):
+    """
+    Process and decode all masks in object_masks annotation in format: {object_id}/{cam_id}/{frame_id} -> COCO RLE
+    """
+    processed_masks = {}
+    
+    for object_id, obj_data in object_masks.items():
+        processed_masks[object_id] = {}
+        
+        for cam_id, cam_data in obj_data.items():
+            processed_masks[object_id][cam_id] = {}
+            
+            annotations = cam_data.get("annotation", {})
+            for frame_id, frame_data in annotations.items():
+                width = frame_data.get("width")
+                height = frame_data.get("height")
+                encoded_mask = frame_data.get("encodedMask")
+                
+                if width and height and encoded_mask:
+                    coco_mask = decode_mask(width, height, encoded_mask)
+                    if coco_mask:
+                        processed_masks[object_id][cam_id][frame_id] = coco_mask
+    
+    return processed_masks
 
 
 def parse_args():
@@ -253,11 +296,25 @@ def process_take(
     
     print(f"\nSuccessfully processed {success_count}/{len(camera_frames)} cameras")
     
+    # Process masks - decode from LZString to COCO RLE format
+    print("\nProcessing and decoding masks...")
+    object_masks = annotation.get("object_masks", {})
+    decoded_masks = process_masks(object_masks)
+    print(f"Decoded masks for {len(decoded_masks)} objects")
+    
+    # Get all extracted frame indices (union of all cameras)
+    all_frame_indices = set()
+    for frames in camera_frames.values():
+        all_frame_indices.update(frames)
+    subsample_idx = sorted(list(all_frame_indices))
+    
     # Create annotation.json
     annotation_output = {
         "scenario": annotation.get("scenario", ""),
         "take_name": take_name,
-        "object_masks": annotation.get("object_masks", {})
+        "object_masks": object_masks,
+        "masks": decoded_masks,
+        "subsample_idx": subsample_idx
     }
     
     annotation_path = take_output_dir / "annotation.json"
