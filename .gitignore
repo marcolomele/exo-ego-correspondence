@@ -13,6 +13,8 @@ output_dir_health/downscaled_takes/
 output_dir_health/normal_takes/
 out/
 annotations/
+fastsam_extraction/FastSAM
+o_mama_health
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
