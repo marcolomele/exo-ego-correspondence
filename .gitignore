@@ -11,7 +11,6 @@ output_dir_cooking/downscaled_takes/
 output_dir_cooking/normal_takes/
 output_dir_health/downscaled_takes/
 output_dir_health/normal_takes/
-out/
 annotations/
 fastsam_extraction/FastSAM
 o_mama_health
