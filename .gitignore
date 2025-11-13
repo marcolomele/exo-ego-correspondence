@@ -13,7 +13,12 @@ output_dir_health/downscaled_takes/
 output_dir_health/normal_takes/
 annotations/
 fastsam_extraction/FastSAM
-o_mama_health
+o_mama_health/Masks_TRAIN_EXO2EGO/
+o_mama_health/Masks_VAL_EXO2EGO/
+o_mama_health/Masks_TEST_EXO2EGO/
+o_mama_health/processed/
+o_mama_health/*.py
+o_mama_health/*.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
