@@ -357,7 +357,7 @@ def main():
     all_uids = [uid for uids in splits.values() for uid in uids]
     print(f"\nTotal UIDs to process: {len(all_uids)}\n")
     
-    output_dir = Path(f"output_dir_{args.scenario}")
+    output_dir = Path(f"../output_dir_{args.scenario}")
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Process UIDs
