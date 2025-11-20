@@ -2,11 +2,11 @@ Health
 * Downscaled 
     * [Done] Inference baseline (4 hours)
     * [Done] Train and val (15 hours)
-    * [...HPC...] Inference finetuned (4 hours)
+    * [Done] Inference finetuned (4 hours)
 * Normal
-    * [] Inference baseline ( hours)
-    * [...VM...] Train and val (24 hours)
-    * [] Inference finetuned ( hours)
+    * [...VM...] Inference baseline (3:22 hours)
+    * [Done] Train and val (24 hours)
+    * [...HPC...] Inference finetuned (4:30 hours)
 
 Cooking
 * Downscaled 
