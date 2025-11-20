@@ -260,8 +260,13 @@ class Masks_Dataset(Dataset):
         mask2_GT = torch.from_numpy(mask2_GT.astype(np.uint8))
 
         # Load the proposed pre-extracted SAM masks for this pair
-        SAM_masks = np.load(f"{self.masks_dir}/{take_id2}/{cam2}/{vid_idx2}_masks.npz")
-        SAM_masks = torch.from_numpy(SAM_masks['arr_0'].astype(np.uint8)) # N, H, W. H = 532, W = 952
+        try:
+            SAM_masks = np.load(f"{self.masks_dir}/{take_id2}/{cam2}/{vid_idx2}_masks.npz")
+            SAM_masks = torch.from_numpy(SAM_masks['arr_0'].astype(np.uint8)) # N, H, W. H = 532, W = 952
+        except FileNotFoundError:
+            print(f"WARNING: Masks not found for UID {take_id2}/{cam2}/{vid_idx2} - skipping this sample")
+            return None
+        
         if len(SAM_masks.shape) < 3:
             SAM_masks = torch.zeros((1, self.h2, self.w2))
         N_masks, H_masks, W_masks = SAM_masks.shape
@@ -271,8 +276,12 @@ class Masks_Dataset(Dataset):
         # Get the adjacent matrix
         adj_matrix = get_adj_matrix(SAM_masks, order=self.order)
         
-        SAM_bboxes_dest = np.load(f"{self.masks_dir}/{take_id2}/{cam2}/{vid_idx2}_boxes.npy")
-        SAM_bboxes_dest = torch.from_numpy(SAM_bboxes_dest.astype(np.float32)) # x1, y1, w, h
+        try:
+            SAM_bboxes_dest = np.load(f"{self.masks_dir}/{take_id2}/{cam2}/{vid_idx2}_boxes.npy")
+            SAM_bboxes_dest = torch.from_numpy(SAM_bboxes_dest.astype(np.float32)) # x1, y1, w, h
+        except FileNotFoundError:
+            print(f"WARNING: Bounding boxes not found for UID {take_id2}/{cam2}/{vid_idx2} - skipping this sample")
+            return None
         h_factor = self.h2 / H_masks
         w_factor = self.w2 / W_masks
         if h_factor != 1 or w_factor != 1:

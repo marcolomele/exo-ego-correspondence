@@ -201,7 +201,29 @@ def evaluate_exoego(gt, preds):
     print('TOTAL LOCATION SCORE: ', location_score)
     shape_acc = np.mean(total_shape_acc)
     print('TOTAL SHAPE ACC: ', shape_acc)
-    return {'iou': iou, 'shape_acc': shape_acc, 'location_score': location_score, 'balanced_acc': balanced_acc}
+    
+    # Aggregate metrics
+    aggregated_metrics = {
+        'iou': iou, 
+        'shape_acc': shape_acc, 
+        'location_score': location_score, 
+        'balanced_acc': balanced_acc
+    }
+    
+    # Per-observation metrics for detailed analysis
+    per_observation_metrics = {
+        'iou_per_obs': total_iou,
+        'shape_acc_per_obs': total_shape_acc,
+        'existence_acc_per_obs': total_existence_acc,
+        'location_score_per_obs': total_location_scores,
+        'obj_exists_gt_per_obs': total_obj_exists_gt,
+        'obj_exists_pred_per_obs': total_obj_exists_pred,
+        'obj_size_gt_per_obs': total_obj_sizes_gt,
+        'obj_size_pred_per_obs': total_obj_sizes_pred,
+        'img_sizes_per_obs': total_img_sizes
+    }
+    
+    return aggregated_metrics, per_observation_metrics
 
 
 def main(args):

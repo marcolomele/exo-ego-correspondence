@@ -1,4 +1,5 @@
 # other
+*.zip
 mentalnotes.md
 SegSwap_way/
 client_secret_drive.json
@@ -20,6 +21,7 @@ o_mama_health/Masks_TEST_EXO2EGO/
 o_mama_health/processed/
 o_mama_health/*.py
 o_mama_health/*.md
+health_normal_data_omama/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

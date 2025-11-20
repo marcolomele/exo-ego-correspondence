@@ -27,7 +27,7 @@ sys.path.insert(0, fastsam_path)
 
 # Configuration
 REPO_ROOT = Path(__file__).parent.parent
-O_MAMA_ROOT = REPO_ROOT / "o_mama_health"
+O_MAMA_ROOT = REPO_ROOT / "health_normal_data_omama"
 PROCESSED_DIR = O_MAMA_ROOT / "processed"
 DATASET_JSONS_DIR = O_MAMA_ROOT / "dataset_jsons"
 FASTSAM_WEIGHTS = Path(__file__).parent / "FastSAM" / "FastSAM-x.pt"

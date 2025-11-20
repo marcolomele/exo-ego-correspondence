@@ -58,14 +58,22 @@ from evaluation.evaluate_egoexo import evaluate_egoexo
 from evaluation.evaluate_exoego import evaluate_exoego
 
 def evaluate(gt_json, pred_json, reverse):
+    """
+    Evaluate predictions against ground truth.
+    
+    Returns:
+        aggregated_metrics: Dictionary with mean/aggregate metrics (iou, shape_acc, etc.)
+        per_observation_metrics: Dictionary with per-observation metrics for detailed analysis
+    """
     if reverse:
         setting = "exo-ego"
         output = {'version': "00",  "challenge": "correspondence",setting: {'results': pred_json}}
         gt = {'version': "00",  "challenge": "correspondence",'annotations': gt_json}
-        out_dict = evaluate_exoego(gt, output)
+        aggregated_metrics, per_observation_metrics = evaluate_exoego(gt, output)
     else:
         setting = "ego-exo"
         output = {'version': "00",  "challenge": "correspondence",setting: {'results': pred_json}}
         gt = {'version': "00",  "challenge": "correspondence",'annotations': gt_json}
-        out_dict = evaluate_egoexo(gt, output)
-    return out_dict
+        aggregated_metrics, per_observation_metrics = evaluate_egoexo(gt, output)
+    
+    return aggregated_metrics, per_observation_metrics

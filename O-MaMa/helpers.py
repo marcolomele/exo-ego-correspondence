@@ -16,5 +16,12 @@ def set_all_seeds(seed):
     torch.backends.cudnn.deterministic = True
 
 def our_collate_fn(batch):
+    # Filter out None samples (when masks are missing)
+    batch = [sample for sample in batch if sample is not None]
+    
+    # Return empty batch if all samples are None
+    if len(batch) == 0:
+        return None
+    
     return {key: torch.stack([sample[key] for sample in batch]) for key in batch[0]}
 
