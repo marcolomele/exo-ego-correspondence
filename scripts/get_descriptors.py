@@ -1,4 +1,4 @@
-""" This extracts DINO descriptors of each mask, and outputs the batch with positive and negative pairs """
+
 
 import torch
 from torchvision import models
@@ -6,65 +6,35 @@ import torch.nn as nn
 import torch.nn.functional as F
 import timm
 
-#create a ResNet model that outputs multi-layer features
+# ResNet-50 DINO feature extractor that replaces DINOv2 for faster inference.
+# Uses self-supervised DINO pretraining (vision-specific) for better dense feature quality.
+# Extracts the last layer and projects to 768 channels to match DINOv2 output dimensions.
 class ResNetMultiLayer(nn.Module):
-    """
-    A multi-layer ResNet feature extractor with CLIP pre-training.
-    This module extracts features from multiple layers of a ResNet-50 backbone 
-    pre-trained with CLIP, projects them to a common channel dimension, and 
-    fuses them into a single feature map.
-    Attributes:
-        resnet: A ResNet-50 model with CLIP pre-training, configured to extract 
-                features from multiple layers.
-        proj_layers: A ModuleList of 1x1 convolutional layers that project each 
-                     feature map to 192 channels.
-    Methods:
-        forward(x): Processes input through the network.
-            Args:
-                x (torch.Tensor): Input tensor of shape (B, C, H, W) where B is 
-                                batch size, C is channels (typically 3), and H, W 
-                                are spatial dimensions.
-            Returns:
-                torch.Tensor: Fused and downsampled feature map of shape 
-                             (B, 768, 16, 16). The 768 channels result from 
-                             concatenating 4 layers of 192 channels each.
-            Processing steps:
-                1. Extracts features from the last 4 ResNet layers
-                2. Projects each feature map to 192 channels using 1x1 convolutions
-                3. Upsamples all features to match the highest resolution
-                4. Concatenates features along the channel dimension
-                5. Downsamples the fused features to 16x16 spatial resolution
-    """
+
     def __init__(self):
         super().__init__()
-        # Load CLIP-pretrained ResNet backbone
-        resnet = timm.create_model('resnet50_clip', pretrained=True, features_only=True)
-        self.resnet = resnet
-
-        # Keep only the last 4 layers
-        channels = resnet.feature_info.channels()[1:]
-        # Match projection layers to these channels
-        self.proj_layers = nn.ModuleList([
-            nn.Conv2d(ch, 192, 1) for ch in channels
-        ])
+        # Load DINO-pretrained ResNet-50 backbone (self-supervised, vision-specific)
+        self.resnet = torch.hub.load('facebookresearch/dino:main', 'dino_resnet50')
+        self.resnet.eval()
+        
+        # Project final ResNet features (2048 channels) to 768 to match DINOv2
+        self.projection = nn.Conv2d(2048, 768, kernel_size=1)
 
     def forward(self, x):
-        # Extract intermediate feature maps
-        feats = self.resnet(x)[1:]
-
-        # Project each feature map to 192 channels
-        for i in range(len(feats)):
-            feats[i] = self.proj_layers[i](feats[i])
-
-        # Align spatial sizes to the highest resolution
-        target_size = feats[0].shape[2:]
-        feats = [F.interpolate(f, size=target_size, mode='bilinear', align_corners=False)
-                 for f in feats]
-
-        # Fuse and downsample
-        fused = torch.cat(feats, dim=1)
-        fused_down = F.interpolate(fused, size=(16, 16), mode='bilinear', align_corners=False)
-        return fused_down
+        # Extract features without the classification head
+        x = self.resnet.conv1(x)
+        x = self.resnet.bn1(x)
+        x = self.resnet.relu(x)
+        x = self.resnet.maxpool(x)
+        
+        x = self.resnet.layer1(x)
+        x = self.resnet.layer2(x)
+        x = self.resnet.layer3(x)
+        x = self.resnet.layer4(x)
+        
+        # Project to 768 channels
+        features = self.projection(x)
+        return features
 
 class DescriptorExtractor:
 
@@ -72,12 +42,18 @@ class DescriptorExtractor:
         # Load ResNet 
         self.model = ResNetMultiLayer().to(device)
         self.model.eval()
+        self.patch_size = patch_size
         self.device = device
         self.context_size = context_size
 
     def extract_dense_features(self, image_tensor):
         with torch.no_grad():  # Disable gradient computation
+            B, _, h, w = image_tensor.shape
             features = self.model(image_tensor)
+            # Reshape to match DINOv2 output dimensions: (B, C, h//patch_size, w//patch_size)
+            target_h = h // self.patch_size
+            target_w = w // self.patch_size
+            features = F.interpolate(features, size=(target_h, target_w), mode='bilinear', align_corners=False)
         return features.to(self.device) 
        
     def dense_mask(self, masks, features):
@@ -164,7 +140,9 @@ class DescriptorExtractor:
         
         _, _, h, w = feats_DEST_img.shape
         reduction_factor = 4
-        dense_features = feats_DEST_img
+        dense_features = torch.nn.functional.interpolate(feats_DEST_img, 
+                                                            size = (int(h * self.patch_size / reduction_factor), int(w * self.patch_size / reduction_factor)), 
+                                                            mode='bilinear', align_corners=False)
         context_DEST_descriptors = self.dense_bbox(batch['DEST_SAM_bbox'], batch['DEST_img_size'], dense_features, context_sizes=[100], reduction_factor=reduction_factor)
         mask_DEST_descriptors = self.dense_mask(batch['DEST_SAM_masks'], dense_features)
         DEST_descriptors = torch.cat((mask_DEST_descriptors, context_DEST_descriptors), dim=2).to(self.device)
@@ -179,7 +157,9 @@ class DescriptorExtractor:
 
         _, _, h, w = feats_SOURCE_img.shape
         reduction_factor = 4
-        dense_features = feats_SOURCE_img
+        dense_features = torch.nn.functional.interpolate(feats_SOURCE_img, 
+                                                            size = (int(h * self.patch_size / reduction_factor), int(w * self.patch_size / reduction_factor)), 
+                                                            mode='bilinear', align_corners=False)
         context_SOURCE_descriptors = self.dense_bbox(batch['SOURCE_bbox'].unsqueeze(1), batch['SOURCE_img_size'], dense_features, context_sizes=[100], reduction_factor=reduction_factor)
         mask_SOURCE_descriptors = self.dense_mask(batch['SOURCE_mask'].unsqueeze(1), dense_features)
         SOURCE_descriptors = torch.cat((mask_SOURCE_descriptors, context_SOURCE_descriptors), dim=2).to(self.device)
