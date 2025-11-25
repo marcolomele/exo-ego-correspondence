@@ -68,7 +68,7 @@ class ResNetMultiLayer(nn.Module):
 
 class DescriptorExtractor:
 
-    def __init__(self, context_size, device, dino_model=None, patch_size=None):
+    def __init__(self, dino_model, patch_size, context_size, device):
         # Load ResNet 
         self.model = ResNetMultiLayer().to(device)
         self.model.eval()
