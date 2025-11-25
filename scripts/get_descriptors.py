@@ -4,17 +4,19 @@ import torch
 from torchvision import models
 import torch.nn as nn
 import torch.nn.functional as F
-import timm
 
-# ResNet-50 DINO feature extractor that replaces DINOv2 for faster inference.
-# Uses self-supervised DINO pretraining (vision-specific) for better dense feature quality.
+# ResNet-50 DINO v1 feature extractor that replaces DINOv2 for faster inference.
+# Uses self-supervised DINO v1 pretraining (vision-specific) for better dense feature quality.
 # Extracts the last layer and projects to 768 channels to match DINOv2 output dimensions.
 class ResNetMultiLayer(nn.Module):
 
     def __init__(self):
         super().__init__()
-        # Load DINO-pretrained ResNet-50 backbone (self-supervised, vision-specific)
+        # Load DINO v1 pretrained ResNet-50 backbone from the original DINO repository
         self.resnet = torch.hub.load('facebookresearch/dino:main', 'dino_resnet50')
+        
+        # Remove the final FC layer to get feature maps
+        self.resnet.fc = nn.Identity()
         self.resnet.eval()
         
         # Project final ResNet features (2048 channels) to 768 to match DINOv2
