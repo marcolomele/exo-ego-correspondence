@@ -189,4 +189,4 @@ This project is for academic purposes. See [LICENSE](LICENSE) for details.
 - [O-MaMa](https://github.com/Maria-SanVil/O-MaMa) — Base model architecture
 - [EgoExo4D](https://ego4d-data.org/) — Dataset
 - [FastSAM](https://github.com/CASIA-IVA-Lab/FastSAM) — Mask extraction
-- [DINOv2](https://github.com/facebookresearch/dinov2) / [DINOv3](https://github.com/facebookresearch/dinov3) — Feature backbones
+- [DINOv1](https://github.com/facebookresearch/dino) / [DINOv2](https://github.com/facebookresearch/dinov2) / [DINOv3](https://github.com/facebookresearch/dinov3) — Feature backbones
