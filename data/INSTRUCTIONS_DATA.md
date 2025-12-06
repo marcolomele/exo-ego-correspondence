@@ -1,5 +1,13 @@
-`raw` contains videos donwloaded using EgoExo4d CLI. More about setting up CLI [here](https://ego4d-data.org/docs/start-here/).
+# Data Directory Structure
 
-`root` contains structure for O-MaMa to run training and inference. More about setting up `root` [here](root/INSTRUCTIONS_ROOT.md).
+## Core Directories
 
-`casa_gio` contains our hand-made dataset. More about using `casa_gio` [here](casa_gio/INSTRUCTIONS_CASA_GIO.md).
+- **`raw/`** - Raw videos downloaded using EgoExo4D CLI. See [setup instructions](raw/INSTRUCTIONS_RAW.md) and [EgoExo4D documentation](https://ego4d-data.org/docs/start-here/).
+
+- **`root/`** - Processed data structure for O-MaMa training and inference. See [setup guide](root/INSTRUCTIONS_ROOT.md).
+
+- **`annotations/`** - Relation annotations from EgoExo4D. See [annotation instructions](annotations/INSTRUCTIONS_ANNOTATIONS.md).
+
+## Processed Datasets
+
+- **`casa_gio/`** - Custom hand-made dataset. See [usage guide](casa_gio/INSTRUCTIONS_CASA_GIO.md).
