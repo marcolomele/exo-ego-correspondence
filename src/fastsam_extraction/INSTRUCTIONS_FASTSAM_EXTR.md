@@ -1,12 +1,16 @@
-Purpose: extract the masks and produce folders `Masks_TEST_EXO2EGO`, `Masks_TRAIN_EXO2EGO`, `Masks_VAL_EXO2EGO`, inside `root`. 
+## Purpose
 
-Set up:
-* clone FastSAM's repository inside `fastsam_extraction`.
-* rename the folder as `FastSAM`.
-* run `extract_masks_FastSAM.py`.
+Extract object masks and produce `Masks_TEST_EXO2EGO/`, `Masks_TRAIN_EXO2EGO/`, `Masks_VAL_EXO2EGO/` folders inside `root/`.
 
+## Setup
 
-High-level pseudocode for FASTSAM mask extraction script:
+1. Clone FastSAM repository inside `fastsam_extraction/`.
+2. Rename the folder to `FastSAM/`.
+3. Run `extract_masks_FastSAM.py`.
+
+## Implementation
+
+High-level pseudocode for FastSAM mask extraction:
 
 ```python
 
