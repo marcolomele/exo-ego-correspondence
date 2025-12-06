@@ -1,0 +1,1 @@
+Download relation annotations using [EgoExo4D CLI](https://ego4d-data.org/docs/start-here/) with appropriate filtering. Approximate size: 2GB. Store in `annotations/relation_annotations/` folder.

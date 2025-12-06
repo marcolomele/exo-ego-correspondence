@@ -5,6 +5,7 @@ src/O-MaMa/main_eval_precomputed_hybrid.py
 src/O-MaMa/main_timed.py
 data/health_normal_data_omama
 data/health_casa_gio
+data/annotations/relation_annotations/
 results/timing_profile_dinov3
 
 src/dinov3-main_ignored
@@ -28,7 +29,7 @@ output_dir_cooking/downscaled_takes/
 output_dir_cooking/normal_takes/
 output_dir_health/downscaled_takes/
 output_dir_health/normal_takes/
-annotations
+
 fastsam_extraction/FastSAM
 o_mama_health/Masks_TRAIN_EXO2EGO/
 o_mama_health/Masks_VAL_EXO2EGO/
