@@ -1,4 +1,5 @@
-# Ego-Exo Correspondence 👀
+# Towards Exo-Ego Correspondence 👀
+## A Technical Review of the State of the Art – Featuring Ego-Exo4D and Object Mask Matching (O-MaMa)
 
 Augmenting object detection and tracking from Ego POV with Exo POV using deep visual correspondence. Research project for Deep Learning for Computer Vision (20060) Bocconi MSc course.
 
