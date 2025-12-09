@@ -85,13 +85,13 @@ Precomputing features provides **10x faster training** by caching backbone outpu
 cd src/scripts
 
 # DINOv3 (default, 384-dim features)
-python precompute_features_dinov3.py --root ../../health_normal_data_omama
+python precompute_features_dinov3.py --root ../../root
 
 # DINOv2 (768-dim features)
-python precompute_features_dinov2.py --root ../../health_normal_data_omama
+python precompute_features_dinov2.py --root ../../root
 
 # ResNet-50 (2048-dim features)
-python precompute_features_resnet50.py --root ../../health_normal_data_omama
+python precompute_features_resnet50.py --root ../../root
 ```
 
 ---
@@ -105,20 +105,20 @@ cd src/O-MaMa
 
 # Train with DINOv3 features
 python main_precomputed.py \
-    --root ../../health_normal_data_omama \
+    --root ../../root \
     --reverse \
     --patch_size 16
 
 # Train with DINOv2 features
 python main_precomputed.py \
-    --root ../../health_normal_data_omama \
+    --root ../../root \
     --reverse \
     --patch_size 14 \
     --dino_feat_dim 768
 
 # Train with ResNet-50 features
 python main_precomputed.py \
-    --root ../../health_normal_data_omama \
+    --root ../../root \
     --reverse \
     --dino_feat_dim 2048
 ```
@@ -130,14 +130,14 @@ cd src/O-MaMa
 
 # Evaluate trained model
 python main_eval_precomputed.py \
-    --root ../../health_normal_data_omama \
+    --root ../../root \
     --reverse \
     --patch_size 16 \
     --checkpoint_dir train_output/run_XXX/model_weights/best_IoU_run_XXX.pt
 
 # Evaluate baseline (no fine-tuning)
 python main_eval_precomputed.py \
-    --root ../../health_normal_data_omama \
+    --root ../../root \
     --reverse \
     --patch_size 16
 ```
