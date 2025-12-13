@@ -141,13 +141,16 @@ Generates training pairs that establish ego-exo correspondences for the same obj
 ### Process
 
 **1. Iterate through takes**
+
 - For each take in the split, load `annotation.json`
 
 **2. Find ego-exo camera pairs**
+
 - Identify ego camera (contains 'aria' in name)
 - Pair with all exo cameras for the same take
 
 **3. Generate correspondence pairs**
+
 Two settings supported:
 - **exoego**: exo → ego (find exo point in ego view) <----- our focus for the project.
   - Iterates over exo camera frames
@@ -156,7 +159,12 @@ Two settings supported:
   - Iterates over ego camera frames
   - For each ego frame, creates pair with corresponding exo frame
 
-**4. Create virtual paths**
+**4. Sample frame-level to create a subset of the data (optional)**
+
+See [INSTRUCTIONS_DATA.md](../data/INSTRUCTIONS_DATA.md) for more details. 
+
+**5. Create virtual paths**
+
 Pair format: `[ego_rgb, ego_mask, exo_rgb, exo_mask]`
 
 Virtual path structure:
